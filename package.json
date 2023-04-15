@@ -1,0 +1,32 @@
+{
+  "name": "api_habit_helper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx --watch --no-warnings src/server.ts | npx pino-pretty"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diegojfcampos/api_habit_helper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diegojfcampos/api_habit_helper/issues"
+  },
+  "homepage": "https://github.com/diegojfcampos/api_habit_helper#readme",
+  "dependencies": {
+    "@fastify/cors": "^8.2.1",
+    "@prisma/client": "^4.12.0",
+    "fastify": "^4.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "prisma": "^4.12.0",
+    "tsx": "^3.12.6",
+    "typescript": "^5.0.4"
+  }
+}

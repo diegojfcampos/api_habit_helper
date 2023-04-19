@@ -3,16 +3,135 @@ const prisma = new PrismaClient();
 
 async function main() {
 
-    await prisma.habit.deleteMany();
-
-    await prisma.habit.create({
+    const firstHabit = await prisma.habit.create({
         data: {
-            title: "Read a book",
+            id: "firstHabitid",
+            title: "Read a Documentation",
             createdAt: new Date("2023-04-18T00:00:00.000Z"),
-        },     
-
+            weekDays: {
+                create: [
+                    { week_day: 1 },
+                    { week_day: 2 }                        
+                ]
+            }
+        }   
     });
- 
+
+    const secondHabit = await prisma.habit.create({
+        data: {
+            id: "secondHabitid",
+            title: "Leetcode exercise",
+            createdAt: new Date("2023-04-18T00:00:00.000Z"),
+            weekDays: {
+                create: [
+                    { week_day: 1 },
+                    { week_day: 2 },
+                    { week_day: 3 },
+                    { week_day: 4 },
+                ]
+            }
+        }   
+    });
+
+    const thirtdHabit = await   prisma.habit.create({
+            data: {
+                id: "thirthHabitid",
+                title: "Decode a project",
+                createdAt: new Date("2023-04-18T00:00:00.000Z"),
+                weekDays: {
+                    create: [
+                        { week_day: 1 },
+                        { week_day: 2 },
+                        { week_day: 3 },
+                        { week_day: 4 },
+                        { week_day: 5 },
+
+                    ]
+                }
+            }   
+        });
+
+    const fourthHabit = await prisma.habit.create({
+            data: {
+                id: "fourthHabitid",
+                title: "Sleep 8 hours",
+                createdAt: new Date("2023-04-18T00:00:00.000Z"),
+                weekDays: {
+                    create: [
+                        { week_day: 1 },
+                        { week_day: 2 },
+                        { week_day: 3 },
+                        { week_day: 4 },
+                        { week_day: 5 },
+                        { week_day: 6 },
+                        { week_day: 7 },
+
+                    ]
+                }
+            }   
+        });
+
+    
+
+    
+        await prisma.day.create({
+            data: {
+                date: new Date("2023-10-18T00:00:00.000Z"),
+                dayHabits: {
+                    create: [
+                        { habit_id: firstHabit.id}
+                    ]
+                }
+            }
+        }),
+
+        await prisma.day.create({
+            data: {
+                date: new Date("2023-11-18T00:00:00.000Z"),
+                dayHabits: {
+                    create: [
+                        { habit_id: secondHabit.id}
+                    ]
+                }
+            }
+        }),
+
+        await prisma.day.create({
+            data: {
+                date: new Date("2023-12-18T00:00:00.000Z"),
+                dayHabits: {
+                    create: [
+                        { habit_id: thirtdHabit.id}
+                    ]
+                }
+            }
+        }),
+
+        prisma.day.create({
+            data: {
+                date: new Date("2023-12-18T00:00:00.000Z"),
+                dayHabits: {
+                    create: [
+                        { habit_id: firstHabit.id},
+                        { habit_id: secondHabit.id},
+                        { habit_id: fourthHabit.id},
+                    ]
+                }
+            }
+        }),
+
+        prisma.day.create({
+            data: {
+                date: new Date("2023-12-18T00:00:00.000Z"),
+                dayHabits: {
+                    create: [
+                        { habit_id: secondHabit.id},
+                        { habit_id: thirtdHabit.id},
+                        { habit_id: fourthHabit.id},
+                    ]
+                }
+            }
+        })    
 }
 
 main()

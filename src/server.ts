@@ -1,4 +1,12 @@
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { PrismaClient } from '@prisma/client';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    prisma: PrismaClient;
+  }
+}
+
 
 const app: FastifyInstance = fastify({ logger: true, ajv: { customOptions: {coerceTypes: true}}});
 
@@ -9,6 +17,8 @@ const start = async () => {
            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
            allowedHeaders: ['Content-Type', 'Authorization']
      });
+
+     app.register(require('../src/controllers/prismaPlugin'));
 
      app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
           reply.send({ Server_Status: 'Running' });

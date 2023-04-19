@@ -1,14 +1,23 @@
-import { PrismaClient } from '@prisma/client'
+
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
+import {z} from 'zod'
 
-const prisma = new PrismaClient()
+interface RouteInterface{
+  app: FastifyInstance,
+  request: FastifyRequest,
+  reply: FastifyReply
 
-async function habitsRoutes(app: FastifyInstance, options: any, done: () => void) {
-  app.get('/gethabits', async (request: FastifyRequest, reply: FastifyReply) => {
-    const habits = await prisma.habit.findMany()
+}
+
+async function habitsRoutes({app, request, reply}: RouteInterface, options: any, done: () => void) {
+  app.get('/habits', async () => {
+    const habits = await app.prisma.habit.findMany()
     reply.send(habits)
   })
 
+  app.post('/habits', async (request, reply) => {
+  })
+  
   done()
 }
 

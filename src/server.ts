@@ -1,4 +1,12 @@
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import { PrismaClient } from '@prisma/client';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    prisma: PrismaClient;
+  }
+}
+
 
 const app: FastifyInstance = fastify({ logger: true, ajv: { customOptions: {coerceTypes: true}}});
 
@@ -10,6 +18,18 @@ const start = async () => {
            allowedHeaders: ['Content-Type', 'Authorization']
      });
 
+     /*
+     Register Plugins
+     */
+
+     //Registering Prisma Plugin instancied Sqlite
+     app.register(require('../src/controllers/prismaPlugin'));
+     //Registering Zod Plugin for validation
+     app.register(require('../src/controllers/zodPlugin'))
+
+     /*
+     Register Routes
+     */
      app.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
           reply.send({ Server_Status: 'Running' });
      });

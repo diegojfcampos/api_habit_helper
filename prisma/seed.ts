@@ -69,11 +69,8 @@ async function main() {
                     ]
                 }
             }   
-        });
+        }); 
 
-    
-
-    
         await prisma.day.create({
             data: {
                 date: new Date("2023-10-18T00:00:00.000Z"),

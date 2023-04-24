@@ -1,15 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
-import dayjs from 'dayjs'
 
 async function habitsRoutes(app: FastifyInstance, options: any, done: () => void) { 
-
-  app.get('/testdb', async (request: FastifyRequest, reply: FastifyReply) =>{
-    const users = await app.z;
-    const check = typeof(users)
-    if(!users) reply.send({message: "DB TEST FAIl"})
-    reply.send({message: "DB TEST OK", user: users, typeof: check})
-
-  })
   
   app.post('/habits', async (request: FastifyRequest, reply: FastifyReply ) => {
     const createHabitBody = app.z.object({
@@ -17,7 +8,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       weekDays: app.z.array(app.z.number().min(0).max(6))
     })
     const { title, weekDays } = createHabitBody.parse(request.body)
-    const today = dayjs().startOf('day').toDate()   
+    const today = app.dayjs().startOf('day').toDate()   
     
     const habit = await app.prisma.habit.create({
       data: {

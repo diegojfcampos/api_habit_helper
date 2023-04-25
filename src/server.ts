@@ -3,7 +3,7 @@ import {z} from 'zod'
 import { PrismaClient } from "@prisma/client";
 const dayjs = require('dayjs')
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({log: ['query', 'info', 'warn']});
 
 
 declare module 'fastify' {
@@ -30,7 +30,16 @@ const start = async () => {
            allowedHeaders: ['Content-Type', 'Authorization']
      });
      app.log.info("Server decorated with @cors")
-   
+
+     /*
+     //Env
+     app.register(require("@fastify/env"))
+     //Jwt
+     app.register(require("@fastify/jwt"). {
+      secret: encodeURIComponent(app.config.SECRET)
+     } )
+     */
+
      //Prisma
      app.decorate("prisma", prisma)
      app.log.info("Server decorated with @prisma/sqlite")  
@@ -49,7 +58,7 @@ const start = async () => {
         swagger: {
           info: {
             title: 'Habit Helper API',
-            description: 'Helping You Achieve a More Productive and Healthier Daily Performance',
+            description: 'Helping You Achieve a More Productive and Healthier Daily Performance',            
             version: '0.1.0'
           },
           schemes: ['http', 'https'],

@@ -60,7 +60,82 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
     reply.send({status: true, possibleHabits, completedHabits})
   })
 
-  
+  app.patch('/habits/:id/toogle', async (request: FastifyRequest, reply: FastifyReply) => {
+    const toogleHabitsParams = app.z.object({
+      id: app.z.string().uuid()
+    })
+
+    const {id} = toogleHabitsParams.parse(request.params)
+
+    const today = app.dayjs().startOf('day').toDate()
+
+    let day = await app.prisma.day.findUnique({
+      where:{
+        date: today,
+      }
+    })
+
+    if(!day){
+      day = await app.prisma.day.create({
+        data:{
+          date: today,
+        }
+      })
+    }
+
+    const dayHabit = await app.prisma.dayHabit.findUnique({
+      where:{
+        day_id_habit_id:{
+          day_id: day.id,
+          habit_id: id,
+        }
+      }
+    })
+
+    if(dayHabit){
+      await app.prisma.dayHabit.delete({
+        where:{
+          id: dayHabit.id,          
+        }
+      })
+    }else{
+      await app.prisma.dayHabit.create({
+        data:{
+          day_id: day.id,
+          habit_id: id,
+        }
+      })
+    } 
+
+
+  })
+
+  app.get('/summary', async (request: FastifyRequest, reply: FastifyReply) => {
+
+    const summary = await app.prisma.$queryRaw`
+      SELECT 
+        D.id, 
+        D.date,
+        (
+          SELECT 
+            cast(count(*) as float)
+          FROM day_habits DH
+          WHERE DH.day_id = D.id
+        ) as completed,
+        (
+          SELECT
+            cast(count(*) as float)
+            FROM habit_week_days HWD
+            JOIN habits H
+              ON H.id = HWD.habit_id
+            WHERE HWD.week_day = cast(strftime('%w', D.date/1000.0, 'unixepoch') as int)
+            AND H.createdAt < D.date
+        ) as amount
+      FROM days D
+
+      `
+    reply.send({summary})
+  })
   
   done()
 }

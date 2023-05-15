@@ -14,11 +14,6 @@
     ],
     "env": {
       "TS_NODE_TRANSPILE_ONLY": "true"
-    },
-    "installConfig": {
-      "include": [
-        "src/**"
-      ]
     }
   }
   

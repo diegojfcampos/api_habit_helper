@@ -25,9 +25,9 @@ const start = async () => {
      
      //Cors
      app.register(require('@fastify/cors'), {
-           origin: true,
-           methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-           allowedHeaders: ['Content-Type', 'Authorization']
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+           
      });
      app.log.info("Server decorated with @cors")
 

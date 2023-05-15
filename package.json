@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx --watch --no-warnings src/server.ts | npx pino-pretty"
+    "dev": "tsx --watch --no-warnings src/server.ts | npx pino-pretty",
+    "start": "node src/server.ts"
   },
   "repository": {
     "type": "git",

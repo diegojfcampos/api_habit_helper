@@ -15,9 +15,6 @@
     "env": {
       "TS_NODE_TRANSPILE_ONLY": "true"
     },
-    "scripts": {
-      "build": "npx tsc"
-    },
     "installConfig": {
       "include": [
         "src/**"

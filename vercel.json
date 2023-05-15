@@ -11,9 +11,6 @@
         "src": "/(.*)",
         "dest": "src/server.ts"
       }
-    ],
-    "env": {
-      "TS_NODE_TRANSPILE_ONLY": "true"
-    }
+    ]
   }
   

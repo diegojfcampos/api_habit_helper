@@ -54,13 +54,15 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       }
     })
 
-    const completedHabits = day?.dayHabits.map(dayHabit => dayHabit.habit_id)
+    const completedHabits = day?.dayHabits.map(dayHabit => {
+      return dayHabit.habit_id    
+    }) ?? []
 
     if(!possibleHabits) reply.send({status: false, message: "Error to get possible habits at this day"})
-    reply.send({status: true, possibleHabits, completedHabits})
+    reply.send({possibleHabits, completedHabits})
   })
 
-  app.patch('/habits/:id/toogle', async (request: FastifyRequest, reply: FastifyReply) => {
+  app.patch('/habits/:id/toggle', async (request: FastifyRequest, reply: FastifyReply) => {
     const toogleHabitsParams = app.z.object({
       id: app.z.string().uuid()
     })

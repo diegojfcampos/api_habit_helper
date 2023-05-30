@@ -1,0 +1,5 @@
+name: api_habit_helper
+env:
+  - key: NODE_ENV
+    value: production
+startCommand: npm run start

@@ -79,7 +79,7 @@ const start = async () => {
 
      app.register(require("./routes/habits"), { prefix: '/api/v1' });     
 
-     app.listen({port: 3333});
+     app.listen({port: 3000});
              
    }catch(err){
      app.log.error(err);

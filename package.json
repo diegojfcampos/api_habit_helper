@@ -2,12 +2,13 @@
   "name": "api_habit_helper",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  
+  "main": "src/server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx --watch --no-warnings src/server.ts | npx pino-pretty",
-    "start": "node src/server.mjs"
+    "dev": "ts-node --watch --no-emit src/server.ts | npx pino-pretty",
+    "start": "node dist/server.js | npx pino-pretty",
+    "build": "tsc",
+    "prestart": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -32,14 +33,11 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@mermaid-js/mermaid-cli": "^10.1.0",
+    "@flydotio/dockerfile": "^0.2.13",    
     "@types/node": "^18.15.11",
-    "prisma": "^4.13.0",
-    "prisma-erd-generator": "^1.5.4",
+    "prisma": "^4.13.0",    
     "tsx": "^3.12.6",
     "typescript": "^5.0.4"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   }
+ 
 }

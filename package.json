@@ -27,17 +27,17 @@
     "@fastify/jwt": "^6.7.1",
     "@fastify/swagger": "^8.3.1",
     "@fastify/swagger-ui": "^1.8.0",
-    "@prisma/client": "^4.13.0",
+    "@prisma/client": "^4.15.0",
     "dayjs": "^1.11.7",
     "fastify": "^4.15.0",
+    "typescript": "^5.0.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@flydotio/dockerfile": "^0.2.13",    
-    "@types/node": "^18.15.11",
-    "prisma": "^4.13.0",    
-    "tsx": "^3.12.6",
-    "typescript": "^5.0.4"
+    "@flydotio/dockerfile": "^0.2.13",
+    "@types/events": "^3.0.0",
+    "@types/node": "^18.16.16",
+    "prisma": "^4.15.0",
+    "tsx": "^3.12.6"
   }
- 
 }

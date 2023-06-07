@@ -29,14 +29,14 @@
     "@fastify/swagger-ui": "^1.8.0",
     "@prisma/client": "^4.15.0",
     "dayjs": "^1.11.7",
-    "fastify": "^4.15.0",
-    "typescript": "^5.0.4",
+    "fastify": "^4.15.0",    
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.2.13",
     "@types/events": "^3.0.0",
     "@types/node": "^18.16.16",
+    "typescript": "^5.0.4",
     "prisma": "^4.15.0",
     "tsx": "^3.12.6"
   }

@@ -8,7 +8,9 @@
     "dev": "ts-node --watch --no-emit src/server.ts | npx pino-pretty",
     "start": "node dist/server.js | npx pino-pretty",
     "build": "tsc",
-    "prestart": "npm run build"
+    "prestart": "npm run build",
+    "vercel-build": "npx prisma migrate deploy"
+
   },
   "repository": {
     "type": "git",

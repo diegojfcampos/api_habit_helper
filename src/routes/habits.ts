@@ -1,5 +1,12 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify'
 
+interface SummaryItem {
+  id: number;
+  date: Date;
+  completed: number;
+  amount: number;
+}
+
 async function habitsRoutes(app: FastifyInstance, options: any, done: () => void) { 
   
   app.post('/habits', async (request: FastifyRequest, reply: FastifyReply ) => {
@@ -113,7 +120,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
   })
 
   app.get('/summary', async (request: FastifyRequest, reply: FastifyReply) => {
-    const summary = await app.prisma.$queryRaw`
+    const summary: SummaryItem[] = await app.prisma.$queryRaw<SummaryItem[]>`
       SELECT 
         D.id, 
         D.date,
@@ -127,15 +134,23 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
           SELECT
             COUNT(*)
           FROM habit_week_days HWD
-          JOIN habits H ON H.id = HWD.habit_id
+              JOIN habits H ON H.id = HWD.habit_id
           WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-            AND H."createdAt" < D.date::date
-        ) as amount
+              AND H."createdAt" < D.date::date
+        )::integer as amount
       FROM days D;
     `;
-  
-    reply.send({ summary });
+
+    // Convert BigInt values to regular integers
+    const formattedSummary = summary.map((item) => ({
+      ...item,
+      completed: Number(item.completed),
+      amount: Number(item.amount)
+    }));
+
+    reply.send({ summary: formattedSummary });
   });
+  
   
   
   done()

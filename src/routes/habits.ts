@@ -139,24 +139,22 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
           SELECT
             COUNT(*)
           FROM habit_week_days HWD
-              JOIN habits H ON H.id = HWD.habit_id
+            JOIN habits H ON H.id = HWD.habit_id
           WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-              AND H."createdAt" <= D.date::date
+            AND H."createdAt" <= D.date::date
         )::integer as amount
       FROM days D;
     `;
-
+  
     // Convert BigInt values to regular integers
     const formattedSummary = summary.map((item) => ({
       ...item,
       completed: Number(item.completed),
-      amount: Number(item.amount)
+      amount: Number(item.amount),
     }));
-
+  
     reply.send({ summary: formattedSummary });
-  });
-  
-  
+  });  
   
   done()
 }

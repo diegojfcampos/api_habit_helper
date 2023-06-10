@@ -1,5 +1,3 @@
-// seed.js
-
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
@@ -14,57 +12,55 @@ const generateRandomWeekDay = () => {
   return Math.floor(Math.random() * 7) + 1;
 };
 
-const generateRandomDate = (daysAgo) => {
-  const date = new Date();
-  date.setDate(date.getDate() - daysAgo);
-  return date.toISOString();
+const generateTodayDate = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set the time to midnight
+  return today.toISOString();
 };
 
 const seed = async () => {
   try {
-    for (let i = 0; i < 20; i++) {
-      const date = generateRandomDate(i);
-      const day = await prisma.day.create({
+    const todayDate = generateTodayDate();
+    const day = await prisma.day.create({
+      data: {
+        date: new Date(todayDate),
+      },
+    });
+
+    for (let i = 0; i < 4; i++) {
+      const habit = await prisma.habit.create({
         data: {
-          date: new Date(date),
+          title: generateRandomHabit(),
         },
       });
 
-      for (let j = 0; j < 3; j++) {
-        const habit = await prisma.habit.create({
-          data: {
-            title: generateRandomHabit(),
-          },
-        });
-
-        await prisma.dayHabit.create({
-          data: {
-            day: {
-              connect: {
-                id: day.id,
-              },
-            },
-            habit: {
-              connect: {
-                id: habit.id,
-              },
+      await prisma.dayHabit.create({
+        data: {
+          day: {
+            connect: {
+              id: day.id,
             },
           },
-        });
-
-        const weekDay = generateRandomWeekDay();
-
-        await prisma.habitWeekDays.create({
-          data: {
-            habit: {
-              connect: {
-                id: habit.id,
-              },
+          habit: {
+            connect: {
+              id: habit.id,
             },
-            week_day: weekDay,
           },
-        });
-      }
+        },
+      });
+
+      const weekDay = generateRandomWeekDay();
+
+      await prisma.habitWeekDays.create({
+        data: {
+          habit: {
+            connect: {
+              id: habit.id,
+            },
+          },
+          week_day: weekDay,
+        },
+      });
     }
     console.log("Seed completed successfully!");
   } catch (error) {

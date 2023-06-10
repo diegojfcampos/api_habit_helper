@@ -70,54 +70,59 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
   })
 
   app.patch('/habits/:id/toggle', async (request: FastifyRequest, reply: FastifyReply) => {
-    const toogleHabitsParams = app.z.object({
+    const toggleHabitsParams = app.z.object({
       id: app.z.string().uuid()
     })
-
-    const {id} = toogleHabitsParams.parse(request.params)
-
+  
+    const { id } = toggleHabitsParams.parse(request.params)
+  
     const today = app.dayjs().startOf('day').toDate()
-
+  
     let day = await app.prisma.day.findUnique({
-      where:{
+      where: {
         date: today,
       }
     })
-
-    if(!day){
+  
+    if (!day) {
       day = await app.prisma.day.create({
-        data:{
+        data: {
           date: today,
         }
       })
     }
-
-    const dayHabit = await app.prisma.dayHabit.findUnique({
-      where:{
-        day_id_habit_id:{
-          day_id: day.id,
-          habit_id: id,
-        }
+  
+    const dayHabit = await app.prisma.dayHabit.findFirst({
+      where: {
+        day_id: day.id,
+        habit_id: id,
       }
     })
-
-    if(dayHabit){
+  
+    if (dayHabit) {
       await app.prisma.dayHabit.delete({
-        where:{
-          id: dayHabit.id,          
+        where: {
+          id: dayHabit.id,
         }
       })
-    }else{
+    } else {
       await app.prisma.dayHabit.create({
-        data:{
-          day_id: day.id,
-          habit_id: id,
+        data: {
+          day: {
+            connect: {
+              id: day.id,
+            }
+          },
+          habit: {
+            connect: {
+              id: id,
+            }
+          },
         }
       })
-    } 
-
-
+    }
   })
+  
 
   app.get('/summary', async (request: FastifyRequest, reply: FastifyReply) => {
     const summary: SummaryItem[] = await app.prisma.$queryRaw<SummaryItem[]>`

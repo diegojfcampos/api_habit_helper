@@ -30,7 +30,7 @@ const seed = async () => {
         },
       });
 
-      for (let j = 0; j < 5; j++) {
+      for (let j = 0; j < 3; j++) {
         const habit = await prisma.habit.create({
           data: {
             title: generateRandomHabit(),

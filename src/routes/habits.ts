@@ -141,7 +141,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
           FROM habit_week_days HWD
             JOIN habits H ON H.id = HWD.habit_id
           WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-            AND H."createdAt" <= D.date::date
+            AND DATE_TRUNC('day', H."createdAt") <= DATE_TRUNC('day', D.date)
         )::integer as amount
       FROM days D;
     `;
@@ -154,7 +154,8 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
     }));
   
     reply.send({ summary: formattedSummary });
-  });  
+  });
+   
   
   done()
 }

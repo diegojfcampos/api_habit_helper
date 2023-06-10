@@ -129,21 +129,12 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       SELECT 
         D.id, 
         D.date,
-        (
-          SELECT 
-            COUNT(*)
-          FROM day_habits DH
-          WHERE DH.day_id = D.id
-        ) as completed,
-        (
-          SELECT
-            COUNT(*)
-          FROM habit_week_days HWD
-            JOIN habits H ON H.id = HWD.habit_id
-          WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-            AND DATE_TRUNC('day', H."createdAt") <= DATE_TRUNC('day', D.date)
-        )::integer as amount
-      FROM days D;
+        COUNT(DH.habit_id) as completed,
+        COUNT(H.id) as amount
+      FROM days D
+      LEFT JOIN day_habits DH ON DH.day_id = D.id
+      LEFT JOIN habits H ON H.id = DH.habit_id
+      GROUP BY D.id, D.date;
     `;
   
     // Convert BigInt values to regular integers

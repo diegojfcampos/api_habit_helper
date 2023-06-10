@@ -5,7 +5,6 @@ interface SummaryItem {
   date: Date;
   completed: number;
   amount: number;
-  habits: string[];
 }
 
 async function habitsRoutes(app: FastifyInstance, options: any, done: () => void) { 
@@ -130,26 +129,12 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       SELECT 
         D.id, 
         D.date,
-        (
-          SELECT COUNT(*)
-          FROM day_habits DH
-          WHERE DH.day_id = D.id
-        ) as completed,
-        (
-          SELECT COUNT(*)
-          FROM habits H
-          JOIN habit_week_days HWD ON H.id = HWD.habit_id
-          WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-            AND H."createdAt" <= D.date::date
-        ) as amount,
-        (
-          SELECT ARRAY_AGG(H.title)
-          FROM habits H
-          JOIN habit_week_days HWD ON H.id = HWD.habit_id
-          WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-            AND H."createdAt" <= D.date::date
-        ) as habits
-      FROM days D;
+        COUNT(DH.habit_id) as completed,
+        COUNT(H.id) as amount
+      FROM days D
+      LEFT JOIN day_habits DH ON DH.day_id = D.id
+      LEFT JOIN habits H ON H.id = DH.habit_id
+      GROUP BY D.id, D.date;
     `;
   
     // Convert BigInt values to regular integers
@@ -157,12 +142,10 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       ...item,
       completed: Number(item.completed),
       amount: Number(item.amount),
-      habits: item.habits || [],
     }));
   
     reply.send({ summary: formattedSummary });
   });
-  
    
   
   done()

@@ -20,13 +20,14 @@ The Habit Helper API is a powerful Node.js-based solution designed to assist use
   - NodeJS
   - Typescript
   - Fastify
-  - Prisma
-  - Zod
+  - Prisma ORM
  
 #### CyberSecurity
   - DotEnv
   - JWT
-  - BCrypt   
+  - BCrypt
+  - Fastify Data Validation Schemas
+  - Zod Data Validation
   
 ## Dependencies
 ```bash

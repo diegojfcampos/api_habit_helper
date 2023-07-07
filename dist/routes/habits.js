@@ -56,10 +56,10 @@ async function habitsRoutes(app, options, done) {
         reply.send({ possibleHabits, completedHabits });
     });
     app.patch('/habits/:id/toggle', async (request, reply) => {
-        const toogleHabitsParams = app.z.object({
+        const toggleHabitsParams = app.z.object({
             id: app.z.string().uuid()
         });
-        const { id } = toogleHabitsParams.parse(request.params);
+        const { id } = toggleHabitsParams.parse(request.params);
         const today = app.dayjs().startOf('day').toDate();
         let day = await app.prisma.day.findUnique({
             where: {
@@ -73,12 +73,10 @@ async function habitsRoutes(app, options, done) {
                 }
             });
         }
-        const dayHabit = await app.prisma.dayHabit.findUnique({
+        const dayHabit = await app.prisma.dayHabit.findFirst({
             where: {
-                day_id_habit_id: {
-                    day_id: day.id,
-                    habit_id: id,
-                }
+                day_id: day.id,
+                habit_id: id,
             }
         });
         if (dayHabit) {
@@ -91,8 +89,16 @@ async function habitsRoutes(app, options, done) {
         else {
             await app.prisma.dayHabit.create({
                 data: {
-                    day_id: day.id,
-                    habit_id: id,
+                    day: {
+                        connect: {
+                            id: day.id,
+                        }
+                    },
+                    habit: {
+                        connect: {
+                            id: id,
+                        }
+                    },
                 }
             });
         }
@@ -102,27 +108,18 @@ async function habitsRoutes(app, options, done) {
       SELECT 
         D.id, 
         D.date,
-        (
-          SELECT 
-            COUNT(*)
-          FROM day_habits DH
-          WHERE DH.day_id = D.id
-        ) as completed,
-        (
-          SELECT
-            COUNT(*)
-          FROM habit_week_days HWD
-              JOIN habits H ON H.id = HWD.habit_id
-          WHERE HWD.week_day = EXTRACT(DOW FROM D.date)
-              AND H."createdAt" < D.date::date
-        )::integer as amount
-      FROM days D;
+        COUNT(DH.habit_id) as completed,
+        COUNT(H.id) as amount
+      FROM days D
+      LEFT JOIN day_habits DH ON DH.day_id = D.id
+      LEFT JOIN habits H ON H.id = DH.habit_id
+      GROUP BY D.id, D.date;
     `;
         // Convert BigInt values to regular integers
         const formattedSummary = summary.map((item) => ({
             ...item,
             completed: Number(item.completed),
-            amount: Number(item.amount)
+            amount: Number(item.amount),
         }));
         reply.send({ summary: formattedSummary });
     });

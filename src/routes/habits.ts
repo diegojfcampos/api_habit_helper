@@ -121,8 +121,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
         }
       })
     }
-  })
-  
+  })  
 
   app.get('/summary', async (request: FastifyRequest, reply: FastifyReply) => {
     const summary: SummaryItem[] = await app.prisma.$queryRaw<SummaryItem[]>`
@@ -136,14 +135,14 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       LEFT JOIN habits H ON H.id = DH.habit_id
       GROUP BY D.id, D.date;
     `;
-  
+    
     // Convert BigInt values to regular integers
     const formattedSummary = summary.map((item) => ({
       ...item,
       completed: Number(item.completed),
       amount: Number(item.amount),
     }));
-  
+
     reply.send({ summary: formattedSummary });
   });
    

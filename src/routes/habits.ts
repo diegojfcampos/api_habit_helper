@@ -151,6 +151,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       completed: Number(item.completed),
       amount: Number(item.amount),
     }));
+    console.log(formattedSummary)
   
     reply.send({ summary: formattedSummary });
   });

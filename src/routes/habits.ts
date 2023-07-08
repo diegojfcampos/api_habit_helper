@@ -138,9 +138,9 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
             CAST(COUNT(*) AS FLOAT)
           FROM habit_week_days HWD
             JOIN habits H ON H.id = HWD.habit_id
-          WHERE
-            HWD.week_day = EXTRACT(DOW FROM D.date)::INT
-            AND H.createdAt < D.date
+            WHERE
+          HWD.week_day = EXTRACT(DOW FROM TO_TIMESTAMP(D.date))::INT
+            AND H."createdAt" < D.date
         ) AS amount
       FROM days D
     `;

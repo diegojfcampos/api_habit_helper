@@ -106,12 +106,22 @@ async function habitsRoutes(app, options, done) {
       SELECT 
         D.id, 
         D.date,
-        COUNT(DH.habit_id) as completed,
-        COUNT(H.id) as amount
+        (
+          SELECT 
+            CAST(COUNT(*) AS FLOAT)
+          FROM day_habits DH
+          WHERE DH.day_id = D.id
+        ) AS completed,
+        (
+          SELECT
+            CAST(COUNT(*) AS FLOAT)
+          FROM habit_week_days HWD
+            JOIN habits H ON H.id = HWD.habit_id
+          WHERE
+            HWD.week_day = EXTRACT(DOW FROM TIMESTAMP 'epoch' + D.date * INTERVAL '1 second')::INT
+            AND H.created_at < D.date
+        ) AS amount
       FROM days D
-      LEFT JOIN day_habits DH ON DH.day_id = D.id
-      LEFT JOIN habits H ON H.id = DH.habit_id
-      GROUP BY D.id, D.date;
     `;
         const formattedSummary = summary.map((item) => ({
             ...item,

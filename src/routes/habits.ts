@@ -139,7 +139,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
           FROM habit_week_days HWD
             JOIN habits H ON H.id = HWD.habit_id
           WHERE
-            HWD.week_day = EXTRACT(DOW FROM TIMESTAMP 'epoch' + D.date * INTERVAL '1 second')::INT
+            HWD.week_day = EXTRACT(DOW FROM TIMESTAMP 'epoch' + DATE_TRUNC('second', D.date) * INTERVAL '1 second')::INT
             AND H.created_at < D.date
         ) AS amount
       FROM days D
@@ -152,7 +152,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
     }));
   
     reply.send({ summary: formattedSummary });
-  });   
+  });  
   
   done()
 }

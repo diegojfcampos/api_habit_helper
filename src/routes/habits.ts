@@ -97,10 +97,12 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       })
     }
   
-    const dayHabit = await app.prisma.dayHabit.findFirst({
+    const dayHabit = await app.prisma.dayHabit.findUnique({
       where: {
-        day_id: day.id,
-        habit_id: id,
+        day_id_habit_id: {
+          day_id: day.id,
+          habit_id: id,
+        }
       }
     })
   
@@ -113,18 +115,10 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
     } else {
       await app.prisma.dayHabit.create({
         data: {
-          day: {
-            connect: {
-              id: day.id,
-            }
+          day_id: day.id,
+          habit_id: id,
           },
-          habit: {
-            connect: {
-              id: id,
-            }
-          },
-        }
-      })
+        })
     }
   })  
 

@@ -22,8 +22,13 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
         title,
         createdAt: today,
         weekDays: {
-          create: weekDays.map(weekDay => ({ week_day: weekDay }))          
-        } 
+          create: weekDays.map(weekDay => { 
+            return{
+              week_day: weekDay, 
+            }
+          })
+        }       
+         
       }
     })  
     if(!habit) reply.send({message: "Error to create habit"})
@@ -134,9 +139,8 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       LEFT JOIN day_habits DH ON DH.day_id = D.id
       LEFT JOIN habits H ON H.id = DH.habit_id
       GROUP BY D.id, D.date;
-    `;
+    `;  
     
-    // Convert BigInt values to regular integers
     const formattedSummary = summary.map((item) => ({
       ...item,
       completed: Number(item.completed),

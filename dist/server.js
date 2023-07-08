@@ -6,7 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fastify_1 = __importDefault(require("fastify"));
 const zod_1 = require("zod");
 const client_1 = require("@prisma/client");
-const dayjs = require('dayjs');
+//Config Time Zone
+const dayjs_1 = __importDefault(require("dayjs"));
+const utc_1 = __importDefault(require("dayjs/plugin/utc"));
+const timezone_1 = __importDefault(require("dayjs/plugin/timezone"));
+require("dayjs/locale/ga");
+dayjs_1.default.extend(utc_1.default);
+dayjs_1.default.extend(timezone_1.default);
+dayjs_1.default.locale('ga');
+dayjs_1.default.tz.setDefault('Europe/Berlin');
 const prisma = new client_1.PrismaClient({ log: ['query', 'info', 'warn'] });
 const app = (0, fastify_1.default)({ logger: true, ajv: { customOptions: { coerceTypes: true } } });
 const start = async () => {
@@ -34,7 +42,7 @@ const start = async () => {
         //Zod
         app.decorate('z', zod_1.z);
         app.log.info("Server decorated with @zod");
-        app.decorate('dayjs', dayjs);
+        app.decorate('dayjs', dayjs_1.default);
         app.log.info("Server decorated with @dayjs");
         //Swagger
         app.register(require('@fastify/swagger'), {});

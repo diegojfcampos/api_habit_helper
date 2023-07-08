@@ -1,7 +1,17 @@
 import fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import {z} from 'zod'
 import { PrismaClient } from "@prisma/client";
-const dayjs = require('dayjs')
+
+//Config Time Zone
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/ga';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale('ga');
+dayjs.tz.setDefault('Europe/Berlin');
 
 const prisma = new PrismaClient({log: ['query', 'info', 'warn']});
 

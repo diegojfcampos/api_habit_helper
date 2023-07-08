@@ -13,7 +13,11 @@ async function habitsRoutes(app, options, done) {
                 title,
                 createdAt: today,
                 weekDays: {
-                    create: weekDays.map(weekDay => ({ week_day: weekDay }))
+                    create: weekDays.map(weekDay => {
+                        return {
+                            week_day: weekDay,
+                        };
+                    })
                 }
             }
         });
@@ -115,7 +119,6 @@ async function habitsRoutes(app, options, done) {
       LEFT JOIN habits H ON H.id = DH.habit_id
       GROUP BY D.id, D.date;
     `;
-        // Convert BigInt values to regular integers
         const formattedSummary = summary.map((item) => ({
             ...item,
             completed: Number(item.completed),

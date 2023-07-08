@@ -140,7 +140,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
             JOIN habits H ON H.id = HWD.habit_id
           WHERE
             HWD.week_day = EXTRACT(DOW FROM D.date)::INT
-            AND H.created_at < D.date
+            AND H.createdAt < D.date
         ) AS amount
       FROM days D
     `;

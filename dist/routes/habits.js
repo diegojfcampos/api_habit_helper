@@ -77,10 +77,12 @@ async function habitsRoutes(app, options, done) {
                 }
             });
         }
-        const dayHabit = await app.prisma.dayHabit.findFirst({
+        const dayHabit = await app.prisma.dayHabit.findUnique({
             where: {
-                day_id: day.id,
-                habit_id: id,
+                day_id_habit_id: {
+                    day_id: day.id,
+                    habit_id: id,
+                }
             }
         });
         if (dayHabit) {
@@ -93,17 +95,9 @@ async function habitsRoutes(app, options, done) {
         else {
             await app.prisma.dayHabit.create({
                 data: {
-                    day: {
-                        connect: {
-                            id: day.id,
-                        }
-                    },
-                    habit: {
-                        connect: {
-                            id: id,
-                        }
-                    },
-                }
+                    day_id: day.id,
+                    habit_id: id,
+                },
             });
         }
     });

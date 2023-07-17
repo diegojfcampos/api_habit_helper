@@ -14,7 +14,7 @@ The Habit Helper API is a powerful Node.js-based solution designed to assist use
 </div>
 
 #### DataBase
-  - PostgreSQL(Neo Serverless), 
+  - PostgreSQL(Neon Serverless), 
 
 ### Technologies
   - NodeJS

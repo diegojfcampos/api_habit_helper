@@ -16,6 +16,14 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
     })
     const { title, weekDays } = createHabitBody.parse(request.body)
     const today = app.dayjs().startOf('day').toDate()   
+
+    const checkTitle = await app.prisma.habit.findFirst({
+      where:{
+        title: title
+      }
+    })
+
+    if(checkTitle) return reply.send({message: "Habit Already Exists"})
     
     const habit = await app.prisma.habit.create({
       data: {

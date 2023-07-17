@@ -30,7 +30,7 @@ const start = async () => {
    try{
 
      /*
-     Decoratig Fastify with Plugins
+     Decorating Fastify with Plugins
      */
      
      //Cors
@@ -40,15 +40,6 @@ const start = async () => {
            
      });
      app.log.info("Server decorated with @cors")
-
-     /*
-     //Env
-     app.register(require("@fastify/env"))
-     //Jwt
-     app.register(require("@fastify/jwt"). {
-      secret: encodeURIComponent(app.config.SECRET)
-     } )
-     */
 
      //Prisma
      app.decorate("prisma", prisma)

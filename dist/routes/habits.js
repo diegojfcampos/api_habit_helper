@@ -8,6 +8,13 @@ async function habitsRoutes(app, options, done) {
         });
         const { title, weekDays } = createHabitBody.parse(request.body);
         const today = app.dayjs().startOf('day').toDate();
+        const checkTitle = await app.prisma.habit.findFirst({
+            where: {
+                title: title
+            }
+        });
+        if (checkTitle)
+            return reply.send({ message: "Habit Already Exists" });
         const habit = await app.prisma.habit.create({
             data: {
                 title,
@@ -103,31 +110,32 @@ async function habitsRoutes(app, options, done) {
     });
     app.get('/summary', async (request, reply) => {
         const summary = await app.prisma.$queryRaw `
-      SELECT 
-        D.id, 
-        D.date,
-        (
-          SELECT 
-            CAST(COUNT(*) AS FLOAT)
-          FROM day_habits DH
-          WHERE DH.day_id = D.id
-        ) AS completed,
-        (
-          SELECT
-            CAST(COUNT(*) AS FLOAT)
-          FROM habit_week_days HWD
-            JOIN habits H ON H.id = HWD.habit_id
-          WHERE
-            HWD.week_day = EXTRACT(DOW FROM TIMESTAMP 'epoch' + D.date * INTERVAL '1 second')::INT
-            AND H.created_at < D.date
-        ) AS amount
-      FROM days D
-    `;
+    SELECT 
+      D.id, 
+      D.date,
+      (
+        SELECT 
+          CAST(COUNT(*) AS FLOAT)
+        FROM day_habits DH
+        WHERE DH.day_id = D.id
+      ) AS completed,
+      (
+        SELECT
+          CAST(COUNT(*) AS FLOAT)
+        FROM habit_week_days HWD
+          JOIN habits H ON H.id = HWD.habit_id
+        WHERE
+          HWD.week_day = EXTRACT(DOW FROM TIMESTAMP 'epoch' + DATE_PART('epoch', D.date) * INTERVAL '1 second')::INT
+          AND H."createdAt" < D.date
+      ) AS amount
+    FROM days D
+  `;
         const formattedSummary = summary.map((item) => ({
             ...item,
             completed: Number(item.completed),
             amount: Number(item.amount),
         }));
+        console.log(formattedSummary);
         reply.send({ summary: formattedSummary });
     });
     done();

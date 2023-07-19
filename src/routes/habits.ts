@@ -40,7 +40,7 @@ async function habitsRoutes(app: FastifyInstance, options: any, done: () => void
       }
     })  
     if(!habit) reply.send({message: "Error to create habit"})
-    reply.send({message: "Habit Created",status: true, habit})
+    reply.send({message: "Habit Created and will be available tomorrow",status: true, habit})
   })
 
   app.get('/day', async (request: FastifyRequest, reply: FastifyReply) => {

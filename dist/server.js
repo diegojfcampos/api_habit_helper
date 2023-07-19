@@ -20,7 +20,7 @@ const app = (0, fastify_1.default)({ logger: true, ajv: { customOptions: { coerc
 const start = async () => {
     try {
         /*
-        Decoratig Fastify with Plugins
+        Decorating Fastify with Plugins
         */
         //Cors
         app.register(require('@fastify/cors'), {
@@ -28,14 +28,6 @@ const start = async () => {
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         });
         app.log.info("Server decorated with @cors");
-        /*
-        //Env
-        app.register(require("@fastify/env"))
-        //Jwt
-        app.register(require("@fastify/jwt"). {
-         secret: encodeURIComponent(app.config.SECRET)
-        } )
-        */
         //Prisma
         app.decorate("prisma", prisma);
         app.log.info("Server decorated with @prisma/sqlite");
